@@ -7,6 +7,8 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   db = require('./config/db');
 
+app.use(express.json());
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
  
@@ -16,5 +18,5 @@ app.use(bodyParser.json())
 app.use('/api', router);
 routes(router)
 
-app.listen(port, () => console.log(`Example JWT app listening on port ${port}!`))
+app.listen(port, () => console.log(`Express app listening on port ${port}!`))
 

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const userServices = {
-  async registerUser(req,res) {
+  registerUser: async (req,res) => {
     try {
       if(!req.body.password) return res.status(404).send({ message: "Please provide some password" });
       if(!req.body.email) return res.status(404).send({ message: "Please provide some email" });
@@ -26,7 +26,8 @@ const userServices = {
       res.status(400).send({ message: "User registration failed"});
     }
   },
-  async loginUser(req,res) {
+
+  loginUser: async (req,res) => {
     try {
       if(!req.body.password) return res.status(404).send({ message: "Email or Password Incorrect" });
       if(!req.body.email) return res.status(404).send({ message: "Email or Password Incorrect" });
@@ -47,7 +48,8 @@ const userServices = {
       res.status(400).send({ message: "Error! Login failed"});
     }
   },
-  async getCurrentUser(req,res) {
+
+  getCurrentUser: async (req,res) => {
     try {
       const user = await User.findById(req.decoded.id);
       res.status(200).send({ message: "Success! User was found", user });

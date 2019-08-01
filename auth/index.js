@@ -1,32 +1,26 @@
-let jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-let checkToken = (req, res, next) => {
-  let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
-  if (token && token.startsWith('Bearer ')) {
-    // Remove Bearer from string
-    token = token.slice(7, token.length);
-  }
+const auth = {
+  verifyAuthToken: (req, res, next) => {
+    const token = req.headers['x-access-token'] || req.headers['Authorization']; // Express headers are auto converted to lowercase
+    if (token && token.startsWith('Bearer ')) {
+      // Remove Bearer from string
+      token = token.slice(7, token.length);
+    }
 
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: 'Token is not valid'
-        });
-      } else {
+    try {
+      if (token) {
+        const decoded = jwt.verify(token, process.env.AUTH_TOKEN_SECRET);
         req.decoded = decoded;
         next();
+      } else {
+        res.status(401).json({ success: false, message: 'Unauthorized' });  
       }
-    });
-  } else {
-    return res.json({
-      success: false,
-      message: 'Auth token is not supplied'
-    });
+    } catch(error) {
+      console.log("Error", error);
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
   }
-};
-
-module.exports = {
-  verifyAuth: checkToken
 }
+
+module.exports = auth
